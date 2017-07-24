@@ -5,13 +5,14 @@ RUN set -ex \
 
 RUN go get github.com/docker/distribution/cmd/registry
 
-COPY /go/bin/registry /bin/registry
-COPY /go/src/github.com/docker/distribution/cmd/registry/config-dev.yml /etc/docker/registry/config.yml
-
-RUN chmod +x /bin/registry
+RUN cp bin/registry /bin/registry && \
+	mkdir -p /etc/docker/registry/ && \
+	cp src/github.com/docker/distribution/cmd/registry/config-dev.yml /etc/docker/registry/config.yml && \
+	chmod +x /bin/registry
 
 VOLUME ["/var/lib/registry"]
 
 EXPOSE 5000
+
 ENTRYPOINT ["registry"]
 CMD ["serve", "/etc/docker/registry/config.yml"]
